@@ -1,24 +1,47 @@
-# README
+# SaaS Accounting
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+> This project is a secure, multi-tenant SaaS Accounting Engine built on Ruby on Rails 8 and PostgreSQL. It delivers a strict double-entry general ledger with real-time balance snapshots, automated financial reporting (P&L, Balance Sheet), and interactive dashboards powered by Stimulus JS and Bootstrap 5.
 
-Things you may want to cover:
+## 🚀 Tech Stack
 
-* Ruby version
+* **Framework:** Rails 8.1.3
+* **Database:** PostgreSQL 16.13 (using Neon for Production)
+* **Deployment:** Containerized via "Back4App"
 
-* System dependencies
+---
 
-* Configuration
+## 📋 Prerequisites
 
-* Database creation
+Before you begin, ensure you have the following installed on your local machine:
+* Ruby (v3.x or higher)
+* PostgreSQL
+* Node.js & Yarn (for asset management)
 
-* Database initialization
+---
 
-* How to run the test suite
+## 🛠️ Local Development Setup
 
-* Services (job queues, cache servers, search engines, etc.)
+Follow these steps to get your development environment running:
 
-* Deployment instructions
+**1. Clone the repository**
+```bash
+git clone https://github.com/EvilivE123/saas_accounting.git
+cd saas_accounting
+```
 
-* ...
+**2. Install dependencies**
+```bash
+bundle install
+yarn install
+```
+
+**3. Database Setup**
+```bash
+rails db:setup 
+(Note: You may need to configure your config/database.yml with your local PostgreSQL credentials if they differ from the default).
+```
+
+**4. Start Application**
+```bash
+bin/dev
+```
