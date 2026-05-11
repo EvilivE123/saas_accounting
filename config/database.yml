@@ -87,6 +87,7 @@ test:
 production:
   primary: &primary_production
     <<: *default
+    url: <%= ENV.fetch("DATABASE_URL", "") %>
     database: saas_accounting_production
   cache:
     <<: *primary_production
