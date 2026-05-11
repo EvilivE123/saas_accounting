@@ -25,7 +25,7 @@ Follow these steps to get your development environment running:
 
 **1. Clone the repository**
 ```bash
-git clone https://github.com/EvilivE123/saas_accounting.git
+git clone git@github.com:EvilivE123/saas_accounting.git
 cd saas_accounting
 ```
 
