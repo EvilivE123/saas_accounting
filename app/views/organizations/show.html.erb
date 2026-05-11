@@ -1,0 +1,31 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2">Organization Settings</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <%= link_to edit_organization_path, class: "btn btn-sm btn-outline-primary" do %>
+      <i class="bi bi-pencil"></i> Edit Settings
+    <% end %>
+  </div>
+</div>
+
+<div class="card shadow-sm col-md-6">
+  <div class="card-header bg-light fw-bold">
+    General Profile
+  </div>
+  <div class="card-body">
+    <dl class="row mb-0">
+      <dt class="col-sm-4 text-muted">Organization Name</dt>
+      <dd class="col-sm-8 fw-medium"><%= @organization.name %></dd>
+
+      <dt class="col-sm-4 text-muted">Tenant ID</dt>
+      <dd class="col-sm-8 font-monospace small"><%= @organization.id %></dd>
+
+      <dt class="col-sm-4 text-muted">Base Currency (ISO)</dt>
+      <dd class="col-sm-8"><span class="badge bg-secondary"><%= @organization.base_currency %></span></dd>
+
+      <dt class="col-sm-4 text-muted">Fiscal Year Start</dt>
+      <dd class="col-sm-8">
+        <%= @organization.fiscal_year_start ? @organization.fiscal_year_start.strftime("%B %d, %Y") : "Not Configured" %>
+      </dd>
+    </dl>
+  </div>
+</div>

@@ -1,0 +1,57 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2">Profit & Loss Statement</h1>
+</div>
+
+<div class="card shadow-sm col-md-8 offset-md-2">
+  <table class="table mb-0">
+    <!-- ===================== REVENUE ===================== -->
+    <thead class="table-light"><tr><th colspan="2" class="text-uppercase">Revenue</th></tr></thead>
+    <tbody>
+      <% @report[:revenues].each do |rev| %>
+        <tr>
+          <td class="ps-4"><%= rev[:name] %></td>
+          <!-- Print negative revenues (e.g. refunds) in red with brackets -->
+          <td class="text-end font-monospace <%= 'text-danger' if rev[:amount] < 0 %>">
+            <%= rev[:amount] < 0 ? "(#{number_to_currency(rev[:amount].abs, unit: '')})" : number_to_currency(rev[:amount], unit: "") %>
+          </td>
+        </tr>
+      <% end %>
+      <tr class="fw-bold bg-light">
+        <td class="text-end">Total Revenue</td>
+        <td class="text-end font-monospace"><%= number_to_currency(@report[:total_revenue], unit: "") %></td>
+      </tr>
+    </tbody>
+
+    <!-- ===================== EXPENSES ===================== -->
+    <thead class="table-light"><tr><th colspan="2" class="border-top text-uppercase">Expenses</th></tr></thead>
+    <tbody>
+      <% @report[:expenses].each do |exp| %>
+        <tr>
+          <td class="ps-4"><%= exp[:name] %></td>
+          <td class="text-end font-monospace <%= 'text-danger' if exp[:amount] < 0 %>">
+            <%= exp[:amount] < 0 ? "(#{number_to_currency(exp[:amount].abs, unit: '')})" : number_to_currency(exp[:amount], unit: "") %>
+          </td>
+        </tr>
+      <% end %>
+      <tr class="fw-bold bg-light">
+        <td class="text-end">Total Expenses</td>
+        <td class="text-end font-monospace border-bottom"><%= number_to_currency(@report[:total_expense], unit: "") %></td>
+      </tr>
+    </tbody>
+
+    <!-- ===================== NET INCOME / LOSS ===================== -->
+    <!-- Logic: Change the background and label based on profitability -->
+    <% is_profitable = @report[:net_income] >= 0 %>
+    
+    <tfoot class="<%= is_profitable ? 'table-success' : 'table-danger' %> fw-bold">
+      <tr>
+        <td class="fs-5 text-end text-uppercase">
+          <%= is_profitable ? "Net Income" : "Net Loss" %>
+        </td>
+        <td class="fs-5 text-end font-monospace border-top border-2 border-dark <%= 'text-danger' unless is_profitable %>">
+          <%= is_profitable ? number_to_currency(@report[:net_income], unit: "") : "(#{number_to_currency(@report[:net_income].abs, unit: '')})" %>
+        </td>
+      </tr>
+    </tfoot>
+  </table>
+</div>

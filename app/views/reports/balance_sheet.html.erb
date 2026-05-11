@@ -1,0 +1,90 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2">Balance Sheet</h1>
+  <% if @report[:is_balanced] %>
+    <span class="badge bg-success fs-6"><i class="bi bi-check-circle"></i> Equation Balanced</span>
+  <% else %>
+    <span class="badge bg-danger fs-6"><i class="bi bi-exclamation-triangle"></i> Out of Balance</span>
+  <% end %>
+</div>
+
+<div class="row">
+  <!-- ===================== ASSETS ===================== -->
+  <div class="col-md-6">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-light fw-bold text-uppercase fs-5">Assets</div>
+      <table class="table mb-0 align-middle">
+        <tbody>
+          <% @report[:assets].each do |asset| %>
+            <tr>
+              <td class="ps-3"><%= asset[:name] %></td>
+              <td class="text-end font-monospace <%= 'text-danger' if asset[:amount] < 0 %>">
+                <%= asset[:amount] < 0 ? "(#{number_to_currency(asset[:amount].abs, unit: '')})" : number_to_currency(asset[:amount], unit: "") %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+        
+        <!-- Dynamic Footer coloring based on balance state -->
+        <tfoot class="<%= @report[:is_balanced] ? 'table-light' : 'table-danger' %> fw-bold fs-6">
+          <tr>
+            <td>Total Assets</td>
+            <td class="text-end font-monospace border-top border-2 border-dark">
+              <%= number_to_currency(@report[:total_assets], unit: "") %>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===================== LIABILITIES & EQUITY ===================== -->
+  <div class="col-md-6">
+    <div class="card shadow-sm mb-4">
+      <div class="card-header bg-light fw-bold text-uppercase fs-5">Liabilities & Equity</div>
+      <table class="table mb-0 align-middle">
+        <tbody>
+          <tr><td colspan="2" class="fst-italic text-muted bg-light border-bottom-0 fw-semibold">Liabilities</td></tr>
+          <% @report[:liabilities].each do |liability| %>
+            <tr>
+              <td class="ps-4"><%= liability[:name] %></td>
+              <td class="text-end font-monospace"><%= number_to_currency(liability[:amount], unit: "") %></td>
+            </tr>
+          <% end %>
+          
+          <tr><td colspan="2" class="fst-italic text-muted bg-light border-bottom-0 fw-semibold">Equity</td></tr>
+          <% @report[:equities].each do |equity| %>
+            <tr>
+              <td class="ps-4 <%= 'fw-medium text-primary' if equity[:name].include?('Net Income') %>">
+                <%= equity[:name] %>
+              </td>
+              <td class="text-end font-monospace <%= 'text-danger' if equity[:amount] < 0 %>">
+                <%= equity[:amount] < 0 ? "(#{number_to_currency(equity[:amount].abs, unit: '')})" : number_to_currency(equity[:amount], unit: "") %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+        
+        <!-- Dynamic Footer coloring based on balance state -->
+        <tfoot class="<%= @report[:is_balanced] ? 'table-light' : 'table-danger' %> fw-bold fs-6">
+          <tr>
+            <td>Total Liabilities & Equity</td>
+            <td class="text-end font-monospace border-top border-2 border-dark">
+              <%= number_to_currency(@report[:total_liabilities_and_equity], unit: "") %>
+            </td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Variance Alert Box (Only renders if broken) -->
+<% unless @report[:is_balanced] %>
+  <div class="alert alert-danger mt-3 d-flex align-items-center" role="alert">
+    <i class="bi bi-exclamation-triangle-fill fs-4 me-3"></i>
+    <div>
+      <strong class="d-block">Critical Ledger Imbalance Detected</strong>
+      Total Assets differ from Total Liabilities & Equity by <strong class="font-monospace"><%= number_to_currency((@report[:total_assets] - @report[:total_liabilities_and_equity]).abs, unit: "") %></strong>. Please review journal entries for orphaned or improperly locked lines.
+    </div>
+  </div>
+<% end %>

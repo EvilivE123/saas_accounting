@@ -1,0 +1,81 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2">Transaction Details</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <%= link_to journal_entries_path, class: "btn btn-sm btn-outline-secondary me-2" do %>
+      <i class="bi bi-arrow-left"></i> Back to Ledger
+    <% end %>
+  </div>
+</div>
+
+<!-- Metadata Header -->
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <div class="row">
+      <div class="col-md-3">
+        <p class="text-muted mb-1 small text-uppercase">Entry Date</p>
+        <p class="fw-bold fs-5"><%= @entry.entry_date.strftime("%B %d, %Y") %></p>
+      </div>
+      <div class="col-md-5">
+        <p class="text-muted mb-1 small text-uppercase">Description</p>
+        <p class="fw-bold fs-5"><%= @entry.description %></p>
+      </div>
+      <div class="col-md-2">
+        <p class="text-muted mb-1 small text-uppercase">Status</p>
+        <p>
+          <% if @entry.is_locked? %>
+            <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+          <% else %>
+            <span class="badge bg-success">Posted</span>
+          <% end %>
+        </p>
+      </div>
+      <div class="col-md-2">
+        <p class="text-muted mb-1 small text-uppercase">Transaction ID</p>
+        <p class="font-monospace text-muted small"><%= @entry.id %></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Double-Entry Line Items Grid -->
+<div class="card shadow-sm">
+  <div class="card-header bg-light fw-bold">
+    Line Items
+  </div>
+  <table class="table table-bordered mb-0">
+    <thead class="table-light">
+      <tr>
+        <th width="15%">Account Code</th>
+        <th width="45%">Account Name</th>
+        <th width="20%" class="text-end">Debit</th>
+        <th width="20%" class="text-end">Credit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% total_debits = 0 %>
+      <% total_credits = 0 %>
+      
+      <% @entry.journal_items.each do |item| %>
+        <% total_debits += item.debit %>
+        <% total_credits += item.credit %>
+        <tr>
+          <td class="font-monospace text-muted"><%= item.account.code %></td>
+          <td class="fw-medium"><%= item.account.name %></td>
+          <td class="text-end font-monospace">
+            <%= number_to_currency(item.debit, unit: "") if item.debit > 0 %>
+          </td>
+          <td class="text-end font-monospace">
+            <%= number_to_currency(item.credit, unit: "") if item.credit > 0 %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+    <tfoot class="table-secondary">
+      <tr>
+        <td colspan="2" class="text-end fw-bold text-uppercase">Totals:</td>
+        <td class="text-end fw-bold font-monospace border-top border-2 border-dark"><%= number_to_currency(total_debits, unit: "") %></td>
+        <td class="text-end fw-bold font-monospace border-top border-2 border-dark"><%= number_to_currency(total_credits, unit: "") %></td>
+      </tr>
+    </tfoot>
+  </table>
+</div>

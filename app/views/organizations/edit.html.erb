@@ -1,0 +1,41 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2">Edit Organization Settings</h1>
+</div>
+
+<div class="card shadow-sm col-md-6">
+  <div class="card-body">
+    <%= form_with(model: @organization, url: organization_path, local: true) do |f| %>
+      <% if @organization.errors.any? %>
+        <div class="alert alert-danger">
+          <h6 class="alert-heading">Please fix the following errors:</h6>
+          <ul class="mb-0">
+            <% @organization.errors.full_messages.each do |msg| %>
+              <li><%= msg %></li>
+            <% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <div class="mb-3">
+        <%= f.label :name, "Organization Name", class: "form-label fw-bold" %>
+        <%= f.text_field :name, class: "form-control", required: true %>
+      </div>
+
+      <div class="mb-3">
+        <%= f.label :base_currency, "Base Currency (ISO Code)", class: "form-label fw-bold" %>
+        <%= f.select :base_currency, options_for_select(Organization::CURRENCY_SYMBOLS.keys, @organization.base_currency), {}, class: "form-select" %>
+      </div>
+
+      <div class="mb-4">
+        <%= f.label :fiscal_year_start, "Start of Fiscal Year", class: "form-label fw-bold" %>
+        <%= f.date_field :fiscal_year_start, class: "form-control" %>
+        <div class="form-text">Defines the operational boundaries for your closed periods.</div>
+      </div>
+
+      <div class="d-flex justify-content-end">
+        <%= link_to 'Cancel', organization_path, class: "btn btn-light me-2" %>
+        <%= f.submit "Save Changes", class: "btn btn-primary" %>
+      </div>
+    <% end %>
+  </div>
+</div>

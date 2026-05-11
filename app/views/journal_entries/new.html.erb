@@ -1,0 +1,82 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+  <h1 class="h2">New Journal Entry</h1>
+</div>
+
+<!-- Bind Stimulus Controllers to the Form -->
+<%= form_with model: @entry, 
+              id: "journal-entry-form",
+              data: { 
+                turbo: false, 
+                controller: "nested-form journal-calculator",
+                action: "submit->journal-calculator#submitAjax:prevent",
+                nested_form_wrapper_selector_value: ".nested-form-wrapper"
+              } do |f| %>
+
+  <!-- Header Section -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <%= f.label :entry_date, class: "form-label fw-bold" %>
+      <%= f.date_field :entry_date, class: "form-control", required: true %>
+    </div>
+    <div class="col-md-9">
+      <%= f.label :description, class: "form-label fw-bold" %>
+      <%= f.text_field :description, class: "form-control", placeholder: "e.g., Monthly Rent Payment", required: true %>
+    </div>
+  </div>
+
+  <!-- The Dynamic Grid Section -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-header bg-light">
+      <strong>Line Items</strong>
+    </div>
+    
+    <table class="table table-bordered mb-0">
+      <thead class="table-light">
+        <tr>
+          <th width="45%">Account</th>
+          <th width="20%" class="text-end">Debit</th>
+          <th width="20%" class="text-end">Credit</th>
+          <th width="15%" class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody id="journal-items-container">
+        
+        <!-- Render Initial Rows -->
+        <%= f.fields_for :journal_items do |item_form| %>
+          <%= render "journal_item_fields", f: item_form, accounts: @accounts %>
+        <% end %>
+
+      </tbody>
+      <tfoot>
+        <!-- Hidden Template for new rows via JS -->
+        <template data-nested-form-target="template">
+          <%= f.fields_for :journal_items, JournalItem.new, child_index: 'NEW_RECORD' do |item_form| %>
+            <%= render "journal_item_fields", f: item_form, accounts: @accounts %>
+          <% end %>
+        </template>
+
+        <!-- Live Calculator Totals -->
+        <tr class="table-secondary">
+          <td class="text-end fw-bold">Totals:</td>
+          <td class="text-end fw-bold font-monospace" data-journal-calculator-target="totalDebit">0.00</td>
+          <td class="text-end fw-bold font-monospace" data-journal-calculator-target="totalCredit">0.00</td>
+          <td class="text-center">
+            <span data-journal-calculator-target="statusBadge" class="badge bg-danger">Unbalanced</span>
+          </td>
+        </tr>
+      </tfoot>
+    </table>
+    
+    <div class="card-footer bg-white">
+      <button type="button" class="btn btn-sm btn-outline-primary" data-action="nested-form#add">
+        <i class="bi bi-plus-circle"></i> Add Line
+      </button>
+    </div>
+  </div>
+
+  <div class="d-flex justify-content-end align-items-center">
+    <div id="ajax-errors" class="text-danger me-3 fw-bold"></div>
+    <%= link_to "Cancel", journal_entries_path, class: "btn btn-light me-2" %>
+    <button type="submit" class="btn btn-primary" data-journal-calculator-target="submitButton" disabled>Post Entry</button>
+  </div>
+<% end %>

@@ -1,0 +1,62 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2">Trial Balance</h1>
+  <!-- Dynamic Status Badge -->
+  <% if @report[:is_balanced] %>
+    <span class="badge bg-success fs-6"><i class="bi bi-check-circle"></i> Ledger Balanced</span>
+  <% else %>
+    <span class="badge bg-danger fs-6 heartbeat-animation"><i class="bi bi-exclamation-triangle"></i> Out of Balance</span>
+  <% end %>
+</div>
+
+<div class="card shadow-sm">
+  <table class="table table-hover align-middle mb-0">
+    <thead class="table-light">
+      <tr>
+        <th width="15%">Code</th>
+        <th width="45%">Account Name</th>
+        <th width="20%" class="text-end">Debit</th>
+        <th width="20%" class="text-end">Credit</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @report[:lines].each do |line| %>
+        <tr>
+          <td class="text-muted font-monospace"><%= line[:code] %></td>
+          <td class="fw-medium"><%= line[:name] %></td>
+          
+          <!-- Logic: Only print value if > 0. If negative, display in red with parentheses -->
+          <td class="text-end font-monospace <%= 'text-danger' if line[:debit] < 0 %>">
+            <% if line[:debit] != 0 %>
+              <%= line[:debit] < 0 ? "(#{number_to_currency(line[:debit].abs, unit: '')})" : number_to_currency(line[:debit], unit: "") %>
+            <% end %>
+          </td>
+          
+          <td class="text-end font-monospace <%= 'text-danger' if line[:credit] < 0 %>">
+            <% if line[:credit] != 0 %>
+              <%= line[:credit] < 0 ? "(#{number_to_currency(line[:credit].abs, unit: '')})" : number_to_currency(line[:credit], unit: "") %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+    
+    <!-- Logic: Change the footer color drastically if the equation fails -->
+    <tfoot class="<%= @report[:is_balanced] ? 'table-light' : 'table-danger' %> fw-bold">
+      <tr>
+        <td colspan="2" class="text-end text-uppercase">Totals:</td>
+        <td class="text-end font-monospace border-top border-2 border-dark"><%= number_to_currency(@report[:total_debit], unit: "") %></td>
+        <td class="text-end font-monospace border-top border-2 border-dark"><%= number_to_currency(@report[:total_credit], unit: "") %></td>
+      </tr>
+      
+      <!-- If unbalanced, explicitly show the variance -->
+      <% unless @report[:is_balanced] %>
+        <tr class="table-danger text-danger">
+          <td colspan="2" class="text-end fst-italic">Variance:</td>
+          <td colspan="2" class="text-end font-monospace fw-bold">
+            <%= number_to_currency((@report[:total_debit] - @report[:total_credit]).abs, unit: "") %>
+          </td>
+        </tr>
+      <% end %>
+    </tfoot>
+  </table>
+</div>

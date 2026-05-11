@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>SaaS Accounting System</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    
+    <!-- CSRF Meta Tags Required for secure Ajax/Fetch API calls -->
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+    
+    <%= stylesheet_link_tag "application", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", "data-turbo-track": "reload", type: "module" %>
+  </head>
+  <body class="bg-light">
+  
+    <!-- Top Navigation Bar -->
+    <%= render 'layouts/topbar' %>
+
+    <div class="container-fluid">
+      <div class="row">
+        <% if user_signed_in? %>
+        
+          <!-- Persistent Sidebar for Authenticated Users -->
+          <%= render 'layouts/sidebar' %>
+          
+          <!-- Main Content Area -->
+          <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+            <div id="flash-messages">
+              <%= render 'layouts/flash_messages' %>
+            </div>
+            
+            <%= yield %>
+          </main>
+          
+        <% else %>
+        
+          <!-- Full Width for Devise Login/Registration -->
+          <main class="col-12 px-4 py-5">
+            <div id="flash-messages" class="container">
+              <%= render 'layouts/flash_messages' %>
+            </div>
+            <%= yield %>
+          </main>
+          
+        <% end %>
+      </div>
+    </div>
+    
+  </body>
+</html>

@@ -1,0 +1,49 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2">General Ledger</h1>
+</div>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Code</th>
+          <th>Account Name</th>
+          <th>Type</th>
+          <th class="text-end">Current Balance</th>
+          <th class="text-center">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% @accounts.each do |account| %>
+          <% 
+            # Dynamically assign badge colors based on the account type
+            badge_color = case account.account_type
+                          when 'asset' then 'bg-primary'
+                          when 'liability' then 'bg-danger'
+                          when 'equity' then 'bg-info text-dark'
+                          when 'revenue' then 'bg-success'
+                          when 'expense' then 'bg-warning text-dark'
+                          else 'bg-secondary'
+                          end
+          %>
+          <tr>
+            <td class="font-monospace text-muted"><%= account.code %></td>
+            <td class="fw-bold"><%= account.name %></td>
+            <td>
+              <span class="badge <%= badge_color %> text-capitalize">
+                <%= account.account_type %>
+              </span>
+            </td>
+            <td class="text-end font-monospace fw-medium">
+              <%= number_to_currency(account.safe_balance, unit: "") %>
+            </td>
+            <td class="text-center">
+              <%= link_to "View Ledger", general_ledger_path(account), class: "btn btn-sm btn-outline-primary" %>
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

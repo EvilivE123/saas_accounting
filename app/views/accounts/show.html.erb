@@ -1,0 +1,41 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2">Account Details: <%= @account.code %></h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <%= link_to accounts_path, class: "btn btn-sm btn-outline-secondary me-2" do %>
+      <i class="bi bi-arrow-left"></i> Back to Chart
+    <% end %>
+    <% if current_user.org_admin? %>
+      <%= link_to edit_account_path(@account), class: "btn btn-sm btn-primary" do %>
+        <i class="bi bi-pencil"></i> Edit Account
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="card shadow-sm col-md-6">
+  <div class="card-body">
+    <dl class="row mb-0">
+      <dt class="col-sm-4 text-muted text-uppercase fs-7">Account Name</dt>
+      <dd class="col-sm-8 fw-bold"><%= @account.name %></dd>
+
+      <dt class="col-sm-4 text-muted text-uppercase fs-7">Account Code</dt>
+      <dd class="col-sm-8 font-monospace"><%= @account.code %></dd>
+
+      <dt class="col-sm-4 text-muted text-uppercase fs-7">Type</dt>
+      <dd class="col-sm-8 text-capitalize"><%= @account.account_type %></dd>
+
+      <dt class="col-sm-4 text-muted text-uppercase fs-7">Hierarchy Path</dt>
+      <dd class="col-sm-8"><%= @account.hierarchy_path %></dd>
+
+      <dt class="col-sm-4 text-muted text-uppercase fs-7">Description</dt>
+      <dd class="col-sm-8"><%= @account.description.presence || "-" %></dd>
+
+      <dt class="col-sm-4 text-muted text-uppercase fs-7">Status</dt>
+      <dd class="col-sm-8">
+        <span class="badge <%= @account.is_active ? 'bg-success' : 'bg-secondary' %>">
+          <%= @account.is_active ? 'Active' : 'Inactive' %>
+        </span>
+      </dd>
+    </dl>
+  </div>
+</div>

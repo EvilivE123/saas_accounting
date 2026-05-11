@@ -1,0 +1,118 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2">Financial Dashboard</h1>
+  
+  <!-- FILTERING WIDGET -->
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <%= form_with url: authenticated_root_path, method: :get, class: "d-flex gap-2", id: "dashboard-filter-form", data: { turbo_frame: "dashboard_content", turbo_action: "advance" } do |f| %>    
+      <%= f.select :filter, 
+            options_for_select([['This Month', 'this_month'], ['Last Month', 'last_month'], ['This Year', 'this_year'], ['Custom Range', 'custom']], @filter_type), 
+            {}, 
+            { 
+              class: "form-select form-select-sm", 
+              id: "filter-select",
+              onchange: "if(this.value === 'custom') { document.getElementById('custom-fields').classList.remove('d-none'); } else { document.getElementById('custom-fields').classList.add('d-none'); this.form.requestSubmit(); }" 
+            } 
+      %>
+      
+      <div id="custom-fields" class="d-flex gap-2 <%= @filter_type == 'custom' ? '' : 'd-none' %>">
+        <%= f.date_field :start_date, value: @start_date, class: "form-control form-control-sm" %>
+        <%= f.date_field :end_date, value: @end_date, class: "form-control form-control-sm" %>
+        <%= f.submit "Filter", class: "btn btn-sm btn-outline-secondary" %>
+      </div>
+
+    <% end %>
+  </div>
+</div>
+
+<!-- Wrap in Turbo Frame for seamless filtering -->
+<%= turbo_frame_tag "dashboard_content" do %>
+
+  <!-- WIDGETS 1, 2, 3: KPI CARDS -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <div class="card shadow-sm text-white bg-primary mb-3">
+        <div class="card-body">
+          <h5 class="card-title text-uppercase fs-6">Total Assets</h5>
+          <h2 class="font-monospace mb-0"><%= number_to_currency(@total_assets, unit: Current.organization.currency_symbol) %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm text-white bg-danger mb-3">
+        <div class="card-body">
+          <h5 class="card-title text-uppercase fs-6">Total Liabilities</h5>
+          <h2 class="font-monospace mb-0"><%= number_to_currency(@total_liabilities, unit: Current.organization.currency_symbol) %></h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card shadow-sm text-white <%= @net_income >= 0 ? 'bg-success' : 'bg-warning text-dark' %> mb-3">
+        <div class="card-body">
+          <h5 class="card-title text-uppercase fs-6"><%= @net_income >= 0 ? 'Net Income' : 'Net Loss' %></h5>
+          <h2 class="font-monospace mb-0"><%= number_to_currency(@net_income, unit: Current.organization.currency_symbol) %></h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIDGETS 4 & 5: CHARTS -->
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-white fw-bold">Revenue vs Expenses</div>
+        <div class="card-body">
+          <canvas data-controller="dashboard-chart" data-dashboard-chart-type-value="bar" data-dashboard-chart-data-value="<%= @rev_exp_data.to_json %>"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-white fw-bold">Asset Distribution</div>
+        <div class="card-body d-flex justify-content-center" style="max-height: 300px;">
+          <canvas data-controller="dashboard-chart" data-dashboard-chart-type-value="doughnut" data-dashboard-chart-data-value="<%= @asset_dist_data.to_json %>"></canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WIDGETS 6 & 7: CASH FLOW & RECENT TRANSACTIONS -->
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-white fw-bold">Cash Flow Trend</div>
+        <div class="card-body">
+          <canvas data-controller="dashboard-chart" data-dashboard-chart-type-value="line" data-dashboard-chart-data-value="<%= @cash_trend_data.to_json %>"></canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="card shadow-sm h-100">
+        <div class="card-header bg-white fw-bold d-flex justify-content-between">
+          <span>Recent Transactions</span>
+          <%= link_to "View All", journal_entries_path, class: "small text-decoration-none" %>
+        </div>
+        <div class="table-responsive">
+          <table class="table table-sm table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>Date</th>
+                <th>Description</th>
+                <th class="text-end">Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% @recent_transactions.each do |entry| %>
+                <tr>
+                  <td class="small"><%= entry.entry_date.strftime("%b %d") %></td>
+                  <td class="small text-truncate" style="max-width: 150px;"><%= entry.description %></td>
+                  <td class="text-end font-monospace small"><%= number_to_currency(entry.journal_items.sum(:debit), unit: Current.organization.currency_symbol) %></td>
+                </tr>
+              <% end %>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<% end %>

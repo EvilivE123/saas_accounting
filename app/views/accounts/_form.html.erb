@@ -1,0 +1,51 @@
+<%= form_with(model: account, local: true, class: "needs-validation") do |f| %>
+  <% if account.errors.any? %>
+    <div class="alert alert-danger">
+      <h6 class="alert-heading"><%= pluralize(account.errors.count, "error") %> prohibited this account from being saved:</h6>
+      <ul class="mb-0">
+        <% account.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <%= f.label :code, "Account Code", class: "form-label fw-bold" %>
+      <%= f.text_field :code, class: "form-control font-monospace", required: true %>
+    </div>
+    <div class="col-md-6">
+      <%= f.label :name, "Account Name", class: "form-label fw-bold" %>
+      <%= f.text_field :name, class: "form-control", required: true %>
+    </div>
+  </div>
+
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <%= f.label :account_type, "Type", class: "form-label fw-bold" %>
+      <%= f.select :account_type, Account.account_types.keys.map { |type| [type.titleize, type] }, { prompt: "Select Type" }, { class: "form-select", required: true } %>
+    </div>
+    <div class="col-md-6">
+      <%= f.label :parent_id, "Parent Account (Optional)", class: "form-label fw-bold" %>
+      <!-- Filter out the current account to prevent infinite loops -->
+      <% available_parents = Current.organization.accounts.where.not(id: account.id).order(:code) %>
+      <%= f.collection_select :parent_id, available_parents, :id, :display_name, { include_blank: "None (Top Level)" }, { class: "form-select" } %>
+    </div>
+  </div>
+
+  <div class="mb-3">
+    <%= f.label :description, "Description", class: "form-label fw-bold" %>
+    <%= f.text_area :description, class: "form-control", rows: 3 %>
+  </div>
+
+  <div class="mb-4 form-check">
+    <%= f.check_box :is_active, class: "form-check-input" %>
+    <%= f.label :is_active, "Active Account", class: "form-check-label fw-bold" %>
+  </div>
+
+  <div class="d-flex justify-content-end">
+    <%= link_to 'Cancel', accounts_path, class: "btn btn-light me-2" %>
+    <%= f.submit class: "btn btn-primary" %>
+  </div>
+<% end %>

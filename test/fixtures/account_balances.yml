@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  organization: one
+  account: one
+  current_balance: 9.99
+  last_entry_at: 2026-05-09 13:32:51
+
+two:
+  organization: two
+  account: two
+  current_balance: 9.99
+  last_entry_at: 2026-05-09 13:32:51

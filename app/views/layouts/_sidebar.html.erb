@@ -1,0 +1,70 @@
+<nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-white sidebar collapse shadow-sm border-end" style="min-height: calc(100vh - 56px);">
+  <div class="position-sticky pt-3">
+    
+    <!-- Financial Operations -->
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase fs-7 fw-bold">
+      <span>Financials</span>
+    </h6>
+    <ul class="nav flex-column">
+      <li class="nav-item">
+        <%= link_to authenticated_root_path, class: "nav-link #{'active fw-bold bg-light text-primary' if current_page?(authenticated_root_path)}" do %>
+          <i class="bi bi-speedometer2 me-2"></i> Dashboard
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to journal_entries_path, class: "nav-link #{'active fw-bold bg-light text-primary' if request.path.start_with?(journal_entries_path)}" do %>
+          <i class="bi bi-journal-text me-2"></i> Journal Entries
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to general_ledgers_path, class: "nav-link #{'active fw-bold bg-light text-primary' if request.path.start_with?(general_ledgers_path)}" do %>
+          <i class="bi bi-book me-2"></i> General Ledger
+        <% end %>
+      </li>
+    </ul>
+
+    <!-- NEW: Reports Section -->
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase fs-7 fw-bold">
+      <span>Reports</span>
+    </h6>
+    <ul class="nav flex-column mb-2">
+      <li class="nav-item">
+        <%= link_to trial_balance_reports_path, class: "nav-link #{'active fw-bold bg-light text-primary' if current_page?(trial_balance_reports_path)}" do %>
+          <i class="bi bi-file-earmark-spreadsheet me-2"></i> Trial Balance
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to profit_and_loss_reports_path, class: "nav-link #{'active fw-bold bg-light text-primary' if current_page?(profit_and_loss_reports_path)}" do %>
+          <i class="bi bi-graph-up-arrow me-2"></i> Profit & Loss
+        <% end %>
+      </li>
+      <li class="nav-item">
+        <%= link_to balance_sheet_reports_path, class: "nav-link #{'active fw-bold bg-light text-primary' if current_page?(balance_sheet_reports_path)}" do %>
+          <i class="bi bi-bank me-2"></i> Balance Sheet
+        <% end %>
+      </li>
+    </ul>
+    
+    <h6 class="sidebar-heading d-flex justify-content-between align-items-center px-3 mt-4 mb-1 text-muted text-uppercase fs-7 fw-bold">
+      <span>Configuration</span>
+    </h6>
+    <ul class="nav flex-column mb-2">
+      
+      <!-- Chart of Accounts Link -->
+      <li class="nav-item">
+        <%= link_to accounts_path, class: "nav-link #{'active fw-bold bg-light text-primary' if request.path.start_with?(accounts_path)}" do %>
+          <i class="bi bi-diagram-3 me-2"></i> Chart of Accounts
+        <% end %>
+      </li>
+
+      <!-- INTEGRATED: Organization Settings -->
+      <li class="nav-item">
+        <%= link_to organization_path, class: "nav-link #{'active fw-bold bg-light text-primary' if current_page?(organization_path) || current_page?(edit_organization_path)}" do %>
+          <i class="bi bi-gear me-2"></i> Organization Settings
+        <% end %>
+      </li>
+    </ul>
+  </div>
+</nav>
+
+

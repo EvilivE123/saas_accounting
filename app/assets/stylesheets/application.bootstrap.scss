@@ -1,0 +1,11 @@
+@import 'bootstrap/scss/bootstrap';
+@import 'bootstrap-icons/font/bootstrap-icons';
+
+// Base UI Overrides for Accounting App
+$primary: #0d6efd;
+$body-bg: #f8f9fa; // Light gray for dashboard contrast
+
+.table-accounting {
+  font-family: monospace;
+  text-align: right;
+}

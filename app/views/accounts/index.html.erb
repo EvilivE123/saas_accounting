@@ -1,0 +1,59 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2">Chart of Accounts</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <% if current_user.org_admin? %>
+      <%= link_to new_account_path, class: "btn btn-sm btn-primary" do %>
+        <i class="bi bi-plus-lg"></i> New Account
+      <% end %>
+    <% end %>
+  </div>
+</div>
+
+<div class="row">
+  <% Account.account_types.keys.each do |type| %>
+    <div class="col-12 mb-4">
+      <div class="card shadow-sm">
+        <div class="card-header bg-light fw-bold text-uppercase">
+          <%= type.pluralize %>
+        </div>
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th width="15%">Code</th>
+              <th width="35%">Name</th>
+              <th width="20%">Parent Account</th>
+              <th width="15%" class="text-center">Status</th>
+              <th width="15%" class="text-end">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if @accounts[type].present? %>
+              <% @accounts[type].each do |account| %>
+                <tr>
+                  <td class="font-monospace text-muted"><%= account.code %></td>
+                  <td class="fw-medium"><%= account.name %></td>
+                  <td><%= account.parent&.name || "-" %></td>
+                  <td class="text-center">
+                    <span class="badge <%= account.is_active ? 'bg-success' : 'bg-secondary' %>">
+                      <%= account.is_active ? 'Active' : 'Inactive' %>
+                    </span>
+                  </td>
+                  <td class="text-end">
+                    <div class="btn-group">
+                      <%= link_to "View", account_path(account), class: "btn btn-sm btn-outline-secondary" %>
+                      <% if current_user.org_admin? %>
+                        <%= link_to "Edit", edit_account_path(account), class: "btn btn-sm btn-outline-primary" %>
+                      <% end %>
+                    </div>
+                  </td>
+                </tr>
+              <% end %>
+            <% else %>
+              <tr><td colspan="5" class="text-muted text-center">No accounts defined.</td></tr>
+            <% end %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  <% end %>
+</div>

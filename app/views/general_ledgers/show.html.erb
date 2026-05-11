@@ -1,0 +1,52 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2"><%= @account.code %> - <%= @account.name %></h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <%= link_to general_ledgers_path, class: "btn btn-sm btn-outline-secondary" do %>
+      <i class="bi bi-arrow-left"></i> Back to Accounts
+    <% end %>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header bg-light d-flex justify-content-between">
+    <span>Chronological Ledger</span>
+    <span class="fw-bold">Closing Balance: <%= number_to_currency(@account.safe_balance, unit: "") %></span>
+  </div>
+  <div class="table-responsive">
+    <table class="table table-bordered table-striped align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th width="15%">Date</th>
+          <th width="35%">Description</th>
+          <th width="15%" class="text-end">Debit</th>
+          <th width="15%" class="text-end">Credit</th>
+          <th width="20%" class="text-end bg-warning bg-opacity-10">Running Balance</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @ledger_items.any? %>
+          <% @ledger_items.each do |item| %>
+            <tr>
+              <td class="text-nowrap"><%= item.entry_date.strftime("%Y-%m-%d") %></td>
+              <td>
+                <%= item.entry_description %>
+                <br><small class="text-muted font-monospace">Entry <%= item.entry_id %></small>
+              </td>
+              <td class="text-end font-monospace"><%= number_to_currency(item.debit, unit: "") if item.debit > 0 %></td>
+              <td class="text-end font-monospace"><%= number_to_currency(item.credit, unit: "") if item.credit > 0 %></td>
+              
+              <!-- Outputting the PostgreSQL Window Function calculation -->
+              <td class="text-end font-monospace fw-bold bg-warning bg-opacity-10">
+                <%= number_to_currency(item.running_balance, unit: "") %>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="5" class="text-center py-4 text-muted">No transactions found for this account.</td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>

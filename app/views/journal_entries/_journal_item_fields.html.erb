@@ -1,0 +1,18 @@
+<tr class="nested-form-wrapper" data-new-record="<%= f.object.new_record? %>">
+  <td>
+    <%= f.collection_select :account_id, accounts, :id, :display_name, { prompt: "Select Account" }, { class: "form-select form-select-sm", required: true } %>
+  </td>
+  <td>
+    <%= f.number_field :debit, step: 0.01, min: 0, class: "form-control form-control-sm text-end font-monospace debit-input", data: { action: "input->journal-calculator#calculate" } %>
+  </td>
+  <td>
+    <%= f.number_field :credit, step: 0.01, min: 0, class: "form-control form-control-sm text-end font-monospace credit-input", data: { action: "input->journal-calculator#calculate" } %>
+  </td>
+  <td class="text-center align-middle">
+    <!-- Hidden field required by Rails nested attributes to destroy records -->
+    <%= f.hidden_field :_destroy %>
+    <button type="button" class="btn btn-sm btn-outline-danger border-0" data-action="nested-form#remove">
+      <i class="bi bi-trash"></i>
+    </button>
+  </td>
+</tr>

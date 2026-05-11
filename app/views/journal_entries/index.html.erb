@@ -1,0 +1,57 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-4 border-bottom">
+  <h1 class="h2">Journal Entries</h1>
+  <div class="btn-toolbar mb-2 mb-md-0">
+    <!-- Call to action pointing to the dynamic form -->
+    <%= link_to new_journal_entry_path, class: "btn btn-sm btn-primary" do %>
+      <i class="bi bi-plus-lg"></i> New Journal Entry
+    <% end %>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="table-responsive">
+    <table class="table table-hover table-striped mb-0 align-middle">
+      <thead class="table-light">
+        <tr>
+          <th scope="col">Date</th>
+          <th scope="col">Description</th>
+          <th scope="col">Posted By</th>
+          <th scope="col" class="text-center">Status</th>
+          <th scope="col" class="text-end">Total Amount</th>
+          <th scope="col" class="text-center">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if @entries.any? %>
+          <% @entries.each do |entry| %>
+            <tr>
+              <td class="text-nowrap"><%= entry.entry_date.strftime("%b %d, %Y") %></td>
+              <td class="fw-medium"><%= entry.description %></td>
+              <td class="text-muted small"><%= entry.user.email %></td>
+              <td class="text-center">
+                <% if entry.is_locked? %>
+                  <span class="badge bg-secondary"><i class="bi bi-lock-fill"></i> Locked</span>
+                <% else %>
+                  <span class="badge bg-success">Posted</span>
+                <% end %>
+              </td>
+              <td class="text-end font-monospace">
+                <!-- Utilizing Ruby summation for display, though normally cached -->
+                <%= number_to_currency(entry.journal_items.sum(:debit), unit: "") %>
+              </td>
+              <td class="text-center">
+                <%= link_to "View", journal_entry_path(entry), class: "btn btn-sm btn-outline-secondary" %>
+              </td>
+            </tr>
+          <% end %>
+        <% else %>
+          <tr>
+            <td colspan="6" class="text-center py-4 text-muted">
+              No journal entries found. Click "New Journal Entry" to post your first transaction.
+            </td>
+          </tr>
+        <% end %>
+      </tbody>
+    </table>
+  </div>
+</div>
