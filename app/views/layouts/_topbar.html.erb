@@ -1,16 +1,14 @@
-<header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <!-- Brand / Tenant Name -->
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3 fs-6" href="/">
+<header class="navbar navbar-dark sticky-top bg-dark flex-nowrap p-0 shadow">
+  
+  <button class="navbar-toggler d-md-none ms-2 border-0" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <a class="navbar-brand col-md-3 col-lg-2 me-auto px-3 fs-6 text-truncate" href="/">
     <%= user_signed_in? && Current.organization ? Current.organization.name : "Accounting Engine" %>
   </a>
   
-  <!-- Mobile Hamburger Toggle -->
-  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  
-  <!-- Session Controls -->
-  <div class="navbar-nav">
+  <div class="navbar-nav flex-row">
     <% if user_signed_in? %>
       <div class="nav-item text-nowrap d-flex align-items-center">
         <span class="text-light me-3 d-none d-md-inline"><%= current_user.email %></span>
