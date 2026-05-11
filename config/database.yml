@@ -88,8 +88,6 @@ production:
   primary: &primary_production
     <<: *default
     database: saas_accounting_production
-    username: saas_accounting
-    password: <%= ENV["SAAS_ACCOUNTING_DATABASE_PASSWORD"] %>
   cache:
     <<: *primary_production
     database: saas_accounting_production_cache
